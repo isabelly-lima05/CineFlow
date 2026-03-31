@@ -232,7 +232,7 @@
         let flippedCards = [];
         let matchedPairs = 0;
         let score = 0;
-        let timeLeft = 60;
+        let timeLeft = 60; // Mantido em 60 SEGUNDOS
         let timerInterval, nightmareInterval, canFlip = false;
 
         async function startGame(mode) {
@@ -289,18 +289,26 @@
 
         function startNightmareEffect() {
             nightmareInterval = setInterval(() => {
+                // Não embaralha se o jogador estiver com cartas abertas
                 if(flippedCards.length > 0) return;
-                const grid = document.getElementById('memory-grid');
-                const cards = Array.from(grid.children).filter(c => !c.classList.contains('flipped'));
                 
-                cards.forEach(card => card.classList.add('shuffling'));
+                const grid = document.getElementById('memory-grid');
+                const allCards = Array.from(grid.children);
+                
+                // Aplica animação em todas as cartas
+                allCards.forEach(card => card.classList.add('shuffling'));
                 
                 setTimeout(() => {
-                    cards.sort(() => Math.random() - 0.5).forEach(card => {
+                    // Embaralha as cartas no array
+                    const shuffled = allCards.sort(() => Math.random() - 0.5);
+                    
+                    // Limpa o grid e reinseri na nova ordem
+                    grid.innerHTML = '';
+                    shuffled.forEach(card => {
                         grid.appendChild(card);
                         card.classList.remove('shuffling');
                     });
-                }, 500);
+                }, 500); // Meio segundo para a animação piscar
             }, 5000);
         }
 
