@@ -1,0 +1,648 @@
+/* --- Design System: Dark & Minimalist --- */
+:root {
+    /* Tema Escuro (Padrão) */
+    --bg-body: #0d1117;
+    --card-bg: #161b22;
+    --primary: #f0f6fc;
+    --accent: #2f81f7;
+    --text-muted: #8b949e;
+    --border-color: #30363d;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius: 12px;
+}
+
+body.light-theme {
+    /* Tema Claro */
+    --bg-body: #f6f8fa;
+    --card-bg: #ffffff;
+    --primary: #1f2328;
+    --accent: #0969da;
+    --text-muted: #636c76;
+    --border-color: #d0d7de;
+}
+
+/* --- Reset e Base --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--primary);
+    line-height: 1.6;
+    padding: 40px 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* --- Header --- */
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header-top h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+/* --- Botão de Tema Aprimorado --- */
+.theme-toggle {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 50px; /* Formato pilula */
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(47, 129, 247, 0.2);
+    background: var(--border-color);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+}
+
+/* Efeito sutil de brilho ao redor do botão no modo claro */
+body.light-theme .theme-toggle {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Busca e Navegação --- */
+.search-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.search-form {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 50px;
+    padding: 4px 20px;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.search-form:focus-within {
+    border-color: var(--accent);
+}
+
+.search-form input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--primary);
+    padding: 10px;
+    width: 100%;
+    font-size: 0.95rem;
+}
+
+.btn-nav {
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 12px 24px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.btn-nav:hover {
+    border-color: var(--accent);
+    background: rgba(47, 129, 247, 0.1);
+}
+
+/* --- Carrossel / Destaque (Ajustado) --- */
+.carousel-container {
+    width: 100%;
+    height: 380px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.carousel-container a {
+    text-decoration: none; /* Link não explícito no carrossel */
+    color: inherit;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4; /* Mais escuro para destacar o texto centralizado */
+}
+
+.carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centralização absoluta */
+    text-align: center;
+    width: 80%;
+}
+
+.carousel-caption h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: var(--primary);
+}
+
+.carousel-caption p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* --- Grid e CARDS (Centralizados e Discretos) --- */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+}
+
+.movie-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card a {
+    text-decoration: none; /* Link não explícito */
+    color: inherit;
+    display: block;
+}
+
+.movie-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.movie-card img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.movie-info {
+    padding: 15px;
+    text-align: center; /* Título centralizado */
+}
+
+.movie-info h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-info span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* --- Botão de remover na Minha Lista --- */
+.btn-remover {
+    color: #f85149;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.75rem;
+    margin-top: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+/* --- Detalhes do Filme (Conforme Wireframe) --- */
+.detalhes-wrapper {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 40px;
+}
+
+.poster-img {
+    width: 100%;
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.info-box {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+}
+
+.info-box strong {
+    color: var(--accent);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.info-box p {
+    font-weight: 500;
+}
+
+.sinopse-container {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.btn-favorito {
+    width: 100%;
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    padding: 16px;
+    border-radius: var(--radius);
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: var(--transition);
+}
+
+.btn-favorito:hover {
+    background: var(--accent);
+    color: white;
+}
+
+/* --- Sugestões Autocomplete --- */
+.suggestions-dropdown {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.suggestion-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--primary);
+}
+
+.suggestion-item:hover {
+    background: rgba(47, 129, 247, 0.1);
+    color: var(--accent);
+}
+
+/* ==========================================================================
+   ESTILOS DO QUIZ - CINEFLOW PREMIUM
+   ========================================================================== */
+
+/* Container de Progresso */
+.quiz-progress-container {
+    width: 100%;
+    height: 10px;
+    background: var(--border-color);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.quiz-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #58a6ff);
+    width: 0%;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Texto do contador (ex: 1/15) */
+#contador-perguntas {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+}
+
+/* Título da Pergunta */
+#pergunta-texto {
+    font-size: 1.8rem;
+    line-height: 1.3;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px !important;
+}
+
+/* Container de Opções */
+#opcoes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 550px;
+    margin: 0 auto;
+    perspective: 1000px; /* Para efeito 3D suave */
+}
+
+/* Botões de Opção */
+.btn-quiz-option {
+    width: 100%;
+    padding: 20px 25px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    color: var(--primary);
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 500;
+    text-align: left;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efeito de hover "Premium" */
+.btn-quiz-option:hover {
+    border-color: var(--accent);
+    background: rgba(47, 129, 247, 0.1);
+    transform: translateX(10px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Pequeno indicador visual no hover */
+.btn-quiz-option::before {
+    content: '→';
+    position: absolute;
+    left: -20px;
+    opacity: 0;
+    transition: var(--transition);
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.btn-quiz-option:hover::before {
+    left: 8px;
+    opacity: 1;
+}
+
+/* Botão de Reset/Refazer */
+.btn-reset-quiz {
+    background: var(--card-bg);
+    color: var(--primary);
+    border: 2px solid var(--accent);
+    padding: 14px 28px;
+    border-radius: var(--radius);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-reset-quiz:hover {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 0 20px rgba(47, 129, 247, 0.4);
+}
+
+/* Animação de entrada das perguntas */
+#quiz-game {
+    animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Estilos do Game --- */
+
+/* Badge de Estatísticas (Timer e Contador) */
+.timer-badge {
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(47, 129, 247, 0.2);
+}
+
+/* Container da Imagem do Desafio */
+.game-img-container {
+    position: relative;
+    width: 100%;
+    max-height: 450px;
+    overflow: hidden;
+    border-radius: var(--radius);
+    margin-bottom: 30px;
+    border: 4px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.game-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+/* Grid de Opções de Resposta */
+.game-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Botões de Resposta Customizados */
+.btn-quiz-option {
+    background: var(--card-bg);
+    color: var(--primary);
+    border: 2px solid var(--border-color);
+    padding: 20px;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-quiz-option:hover {
+    border-color: var(--accent);
+    background: rgba(47, 129, 247, 0.1);
+    transform: translateY(-3px);
+}
+
+.btn-quiz-option:active {
+    transform: scale(0.98);
+}
+
+/* Ranking Table Styling */
+.ranking-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.ranking-table tr {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.ranking-table td {
+    padding: 15px;
+}
+
+.ranking-table tr td:first-child {
+    border-radius: 10px 0 0 10px;
+    font-weight: bold;
+}
+
+.ranking-table tr td:last-child {
+    border-radius: 0 10px 10px 0;
+    text-align: right;
+    color: var(--accent);
+}
+
+/* Animação de Feedback (Flash de Acerto) */
+@keyframes correctFlash {
+    0% { background-color: var(--bg-body); }
+    50% { background-color: #1a4a1a; }
+    100% { background-color: var(--bg-body); }
+}
+
+.correct-feedback {
+    animation: correctFlash 0.4s ease-out;
+}
+
+/* --- Banner de Chamada para o Jogo --- */
+.game-banner-home {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, var(--card-bg), #1a2a44);
+    padding: 25px 35px;
+    border-radius: var(--radius);
+    margin-bottom: 35px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Ajuste das cores no Modo Claro */
+body.light-theme .game-banner-home {
+    background: linear-gradient(90deg, var(--card-bg), #e6f0ff);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.game-banner-home:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 15px 30px rgba(47, 129, 247, 0.15);
+}
+
+.game-banner-content h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.game-banner-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 5px;
+}
+
+/* Responsividade para celulares */
+@media (max-width: 650px) {
+    .game-banner-home {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 20px;
+    }
+}
+
+/* Responsividade para Celulares */
+@media (max-width: 600px) {
+    .game-options-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-img-container {
+        max-height: 250px;
+    }
+}
+
+/* --- Responsividade --- */
+@media (max-width: 850px) {
+    .detalhes-wrapper { grid-template-columns: 1fr; }
+    .poster-container { max-width: 300px; margin: 0 auto; }
+    .carousel-caption h2 { font-size: 1.8rem; }
+}
