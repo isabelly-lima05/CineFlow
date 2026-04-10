@@ -7,7 +7,7 @@
     <title>CineFlow - CineMemory Extreme</title>
     <link rel="stylesheet" href="../static/style.css">
     <style>
-        /* --- ESTILIZAÇÃO IDENTICA AO CINEFLOW --- */
+        /* --- ESTILIZAÇÃO --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -54,7 +54,6 @@
 
         .hidden-score { opacity: 0; filter: blur(15px); pointer-events: none; }
 
-        /* --- ANIMAÇÃO DE EMBARALHAMENTO (NOVO) --- */
         @keyframes shuffle-blink {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(0.95); opacity: 0.4; filter: brightness(1.8); }
@@ -62,7 +61,6 @@
         }
         .shuffling { animation: shuffle-blink 0.5s ease-in-out; }
 
-        /* Grid e Cards */
         .memory-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -77,21 +75,25 @@
             border-radius: var(--radius);
         }
         .flipped .card-inner { transform: rotateY(180deg); box-shadow: 0 0 15px var(--accent); }
-        .card-front, .card-back {
+        
+        .card-front { 
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: var(--radius);
+            display: flex; align-items: center; justify-content: center;
+            background: #0d1117; color: var(--accent); font-size: 2.5rem; font-weight: 900; border: 2px solid var(--accent); 
+        }
+
+        .card-back { 
             position: absolute; width: 100%; height: 100%;
             backface-visibility: hidden; border-radius: var(--radius);
             border: 2px solid var(--border-color);
             display: flex; align-items: center; justify-content: center;
+            transform: rotateY(180deg); background: #000; overflow: hidden; 
         }
-        .card-front { background: #0d1117; color: var(--accent); font-size: 2rem; font-weight: 900; border-color: var(--accent); }
-        .card-back { transform: rotateY(180deg); background: #000; overflow: hidden; }
-        .card-back img { width: 100%; height: 100%; object-fit: cover; }
 
-        .ranking-scroll {
-            max-height: 250px;
-            overflow-y: auto;
-            margin-top: 15px;
-        }
+        .card-back img { width: 100%; height: 100%; object-fit: contain; background: #000; }
+
+        .ranking-scroll { max-height: 250px; overflow-y: auto; margin-top: 15px; }
         .ranking-scroll::-webkit-scrollbar { width: 4px; }
         .ranking-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
@@ -179,62 +181,61 @@
     </div>
 
     <script>
-        let scoreVisible = true;
-        function toggleScoreVisibility() {
-            scoreVisible = !scoreVisible;
-            const scoreDisplay = document.getElementById('score-display');
-            const icon = document.getElementById('score-icon');
-            const btn = document.getElementById('score-btn');
-            if(scoreVisible) {
-                scoreDisplay.classList.remove('hidden-score');
-                icon.innerText = "👁️";
-                btn.style.borderColor = "var(--border-color)";
-            } else {
-                scoreDisplay.classList.add('hidden-score');
-                icon.innerText = "🙈";
-                btn.style.borderColor = "var(--accent)";
-            }
-        }
-
+        // --- LÓGICA DO TEMA RESTAURADA ---
+        const themeButton = document.getElementById('themeButton');
         const applyTheme = (t) => {
-            if (t === 'light') { document.body.classList.add('light-theme'); document.getElementById('themeButton').innerText = "🌙 Modo Escuro"; }
-            else { document.body.classList.remove('light-theme'); document.getElementById('themeButton').innerText = "☀️ Modo Claro"; }
+            if (t === 'light') { 
+                document.body.classList.add('light-theme'); 
+                themeButton.innerText = "🌙 Modo Escuro"; 
+            } else { 
+                document.body.classList.remove('light-theme'); 
+                themeButton.innerText = "☀️ Modo Claro"; 
+            }
         };
         applyTheme(localStorage.getItem('theme') || 'dark');
-        document.getElementById('themeButton').onclick = () => {
+        themeButton.onclick = () => {
             const newT = document.body.classList.contains('light-theme') ? 'dark' : 'light';
             applyTheme(newT);
             localStorage.setItem('theme', newT);
         };
 
-        let currentMode = '';
-        function showManual(mode) {
-            currentMode = mode;
-            const modal = document.getElementById('modal-manual');
-            const title = document.getElementById('manual-title');
-            const body = document.getElementById('manual-body');
-            modal.style.display = 'flex';
-            if(mode === 'time') {
-                title.innerText = "⏱️ MODO NORMAL";
-                body.innerHTML = `<strong>Atenção:</strong> Você terá 9 segundos para ver as cartas.<br><br><strong>Pontuação:</strong> Ganhe (Tempo Restante × 10) por cada par encontrado.`;
-            } else if(mode === 'hard') {
-                title.innerText = "🔥 MODO HARD";
-                body.innerHTML = `<strong>Atenção:</strong> Sem preview! Memorize as cartas enquanto joga.<br><br><strong>Pontuação:</strong> 200 pontos fixos por par encontrado.`;
-            } else {
-                title.innerText = "💀 MODO PESADELO";
-                body.innerHTML = `<strong>Atenção:</strong> Sem preview e as cartas mudam de lugar sozinhas a cada 5 segundos!<br><br><strong>Pontuação:</strong> 500 pontos por par.`;
-            }
-            document.getElementById('btn-confirm-start').onclick = () => {
-                modal.style.display = 'none';
-                startGame(mode);
-            };
-        }
-
+        let scoreVisible = true;
         let flippedCards = [];
         let matchedPairs = 0;
         let score = 0;
-        let timeLeft = 60; // Mantido em 60 SEGUNDOS
+        let timeLeft = 60;
         let timerInterval, nightmareInterval, canFlip = false;
+        let currentMode = '';
+
+        function toggleScoreVisibility() {
+            scoreVisible = !scoreVisible;
+            const scoreDisplay = document.getElementById('score-display');
+            const icon = document.getElementById('score-icon');
+            scoreDisplay.classList.toggle('hidden-score', !scoreVisible);
+            icon.innerText = scoreVisible ? "👁️" : "🙈";
+        }
+
+        function showManual(mode) {
+            currentMode = mode;
+            const modal = document.getElementById('manual-title');
+            const body = document.getElementById('manual-body');
+            document.getElementById('modal-manual').style.display = 'flex';
+            
+            if(mode === 'time') {
+                modal.innerText = "⏱️ MODO NORMAL";
+                body.innerHTML = `<strong>Atenção:</strong> Você terá 9 segundos para ver as cartas.<br><br><strong>Pontuação:</strong> Ganhe (Tempo Restante × 10) por cada par encontrado.`;
+            } else if(mode === 'hard') {
+                modal.innerText = "🔥 MODO HARD";
+                body.innerHTML = `<strong>Atenção:</strong> Sem preview! Memorize as cartas enquanto joga.<br><br><strong>Pontuação:</strong> 200 pontos fixos por par encontrado.`;
+            } else {
+                modal.innerText = "💀 MODO PESADELO";
+                body.innerHTML = `<strong>Atenção:</strong> Sem preview e as cartas mudam de lugar rigorosamente a cada 5 segundos!<br><br><strong>Pontuação:</strong> 500 pontos por par.`;
+            }
+            document.getElementById('btn-confirm-start').onclick = () => {
+                document.getElementById('modal-manual').style.display = 'none';
+                startGame(mode);
+            };
+        }
 
         async function startGame(mode) {
             document.getElementById('menu-screen').style.display = 'none';
@@ -261,7 +262,15 @@
                 const card = document.createElement('div');
                 card.className = 'memory-card';
                 card.dataset.id = cardData.id;
-                card.innerHTML = `<div class=\"card-inner\"><div class=\"card-front\">?</div><div class=\"card-back\">${cardData.tipo === 'imagem' ? `<img src=\"${cardData.conteudo}\">` : `<span style=\"color:white; font-size:0.7rem; text-align:center; font-weight:bold; padding:5px;\">${cardData.conteudo}</span>`}</div></div>`;
+                card.innerHTML = `<div class="card-inner">
+                    <div class="card-front">?</div>
+                    <div class="card-back">
+                        ${cardData.tipo === 'imagem' 
+                            ? `<img src="${cardData.conteudo}">` 
+                            : `<span style="color:white; font-size:0.9rem; text-align:center; font-weight:900; padding:10px; text-transform:uppercase;">${cardData.conteudo}</span>`
+                        }
+                    </div>
+                </div>`;
                 card.onclick = () => flipCard(card);
                 grid.appendChild(card);
             });
@@ -276,7 +285,12 @@
             const pInt = setInterval(() => {
                 pTimer--;
                 badge.innerText = `👀 ${pTimer}S`;
-                if (pTimer <= 0) { clearInterval(pInt); cards.forEach(c => c.classList.remove('flipped')); canFlip = true; startTimer(); }
+                if (pTimer <= 0) { 
+                    clearInterval(pInt); 
+                    cards.forEach(c => c.classList.remove('flipped')); 
+                    canFlip = true; 
+                    startTimer(); 
+                }
             }, 1000);
         }
 
@@ -290,39 +304,35 @@
 
         function startNightmareEffect() {
             nightmareInterval = setInterval(() => {
-                // Não embaralha se o jogador estiver com cartas abertas
-                if(flippedCards.length > 0) return;
-                
+                if (flippedCards.length === 1) return;
                 const grid = document.getElementById('memory-grid');
                 const allCards = Array.from(grid.children);
-                
-                // Aplica animação em todas as cartas
-                allCards.forEach(card => card.classList.add('shuffling'));
-                
+                canFlip = false;
+                allCards.forEach(c => { if (!c.classList.contains('matched')) c.classList.remove('flipped'); });
+                flippedCards = [];
+                allCards.forEach(c => c.classList.add('shuffling'));
                 setTimeout(() => {
-                    // Embaralha as cartas no array
                     const shuffled = allCards.sort(() => Math.random() - 0.5);
-                    
-                    // Limpa o grid e reinseri na nova ordem
                     grid.innerHTML = '';
-                    shuffled.forEach(card => {
-                        grid.appendChild(card);
-                        card.classList.remove('shuffling');
-                    });
-                }, 500); // Meio segundo para a animação piscar
+                    shuffled.forEach(c => { grid.appendChild(c); c.classList.remove('shuffling'); });
+                    canFlip = true;
+                }, 500);
             }, 5000);
         }
 
         function flipCard(card) {
-            if(!canFlip || card.classList.contains('flipped')) return;
+            if(!canFlip || card.classList.contains('flipped') || card.classList.contains('matched')) return;
             card.classList.add('flipped');
             flippedCards.push(card);
             if(flippedCards.length === 2) {
                 canFlip = false;
                 const [c1, c2] = flippedCards;
                 if(c1.dataset.id === c2.dataset.id) {
+                    c1.classList.add('matched'); c2.classList.add('matched');
                     matchedPairs++;
-                    score += (currentMode === 'time' ? timeLeft * 10 : (currentMode === 'hard' ? 200 : 500));
+                    if (currentMode === 'time') score += (timeLeft * 10);
+                    else if (currentMode === 'hard') score += 200;
+                    else score += 500;
                     updateScoreDisplay();
                     flippedCards = []; canFlip = true;
                     if(matchedPairs >= 12) endGame(true);
@@ -338,7 +348,7 @@
             clearInterval(timerInterval); clearInterval(nightmareInterval);
             document.getElementById('modal-fim').style.display = 'flex';
             document.getElementById('finish-title').innerText = win ? "🏆 VITÓRIA!" : "⏰ FIM DE JOGO";
-            document.getElementById('finish-score-text').innerHTML = `Pontuação: <strong>${score}</strong>`;
+            document.getElementById('finish-score-text').innerHTML = `Sua pontuação: <strong>${score}</strong>`;
         }
 
         function salvarRanking() {
@@ -346,7 +356,7 @@
             const ranking = JSON.parse(localStorage.getItem('memory_ranking') || '[]');
             ranking.push({ name, points: score });
             ranking.sort((a, b) => b.points - a.points);
-            localStorage.setItem('memory_ranking', JSON.stringify(ranking));
+            localStorage.setItem('memory_ranking', JSON.stringify(ranking.slice(0, 10)));
             location.reload();
         }
 
@@ -355,9 +365,9 @@
             const table = document.getElementById('ranking-body');
             if (ranking.length > 0) {
                 document.getElementById('btn-reset-link').style.display = 'block';
-                table.innerHTML = ranking.map((r, i) => `<tr><td style=\"padding:10px; border-bottom:1px solid var(--border-color); color:var(--accent); font-weight:bold;\">#${i+1}</td><td style=\"padding:10px; border-bottom:1px solid var(--border-color);\">${r.name}</td><td style=\"padding:10px; border-bottom:1px solid var(--border-color); text-align:right; font-weight:900;\">${r.points}</td></tr>`).join('');
+                table.innerHTML = ranking.map((r, i) => `<tr><td style="padding:10px;">#${i+1}</td><td>${r.name}</td><td style="text-align:right;">${r.points}</td></tr>`).join('');
             } else {
-                table.innerHTML = `<tr><td style=\"text-align:center; padding:20px; color:var(--text-muted);\">Nenhum recorde ainda.</td></tr>`;
+                table.innerHTML = `<tr><td style="text-align:center; padding:20px;">Nenhum recorde ainda.</td></tr>`;
             }
         }
 
